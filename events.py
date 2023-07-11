@@ -15,9 +15,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-def store():
+from datetime import date
+import time
 
-    url = "https://api.sofascore.com/api/v1/sport/football/scheduled-events/2023-07-10"
+today = str(date.today())
+
+def store(today):
+
+    
+
+    url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today}"
 
     payload = ""
     headers = {
@@ -37,6 +44,7 @@ def store():
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     }
 
+
     response = requests.request("GET", url, data=payload, headers=headers).json()
 
     # print(response)
@@ -44,12 +52,6 @@ def store():
     with open('json/all.json', 'w', encoding='utf-8') as f:
         json.dump(response, f, indent=4, ensure_ascii=False)
 
-
-    # Base = declarative_base()
-
-    # models.Base.metadata.create_all(engine)
-
-    # Session = sessionmaker(bind=engine)
 
     db = SessionLocal() 
 
@@ -129,5 +131,11 @@ def store():
                     session.commit()
                 except:
                      continue
+                
+    print('DO!!!')
+                
 
-store()
+
+while True:
+    store(today)
+    time.sleep(60)
